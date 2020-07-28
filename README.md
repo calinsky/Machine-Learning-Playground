@@ -25,4 +25,4 @@ The user plots data points on the screen and then sees how various machine learn
 	machine_learning_website.html     - Main website
 	matrix.js                         - Matrix class
 	
-	![machine_learning_img](https://user-images.githubusercontent.com/55214224/88623325-bcc38200-d072-11ea-9200-4d03c13257ef.png)
+![machine_learning_img](https://user-images.githubusercontent.com/55214224/88623325-bcc38200-d072-11ea-9200-4d03c13257ef.png)
