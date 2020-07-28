@@ -5,32 +5,21 @@ The user plots data points on the screen and then sees how various machine learn
 Methods explored:
 
 Linear Regression
-
 Kernel Regression
 
 
 Coming soon:
 
 k-Nearest Neighbors
-
 k-Means Clustering
-
 Decision Trees
-
 Random Forests
-
 Standard Support Vector Machines
-
 Multi-Class Support Vector Machines
-
 Neural Networks
-
 Logistic Regression
-
 Naive Bayes
-
 Gaussian Mixture Models
-
 
 CODE:
 machine_learning_website.html     - Main website
