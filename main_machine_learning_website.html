@@ -1,0 +1,249 @@
+<!-- https://ourcodeworld.com/articles/read/49/draw-points-on-a-canvas-with-javascript-html5 -->
+<html>
+<head>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+<script src="matrix.js"></script>
+<script src="machine_learning.js"></script>
+<script src="graph.js"></script>
+<script type="text/javascript"></script>
+
+	
+<style>
+
+	body {
+		background-color: #ccc; /* grey background*/
+	}
+
+	/* Partitions */
+	* {
+	  box-sizing: border-box;
+	}
+	
+	p.sansserif {
+	  font-family: Arial, Helvetica, sans-serif;
+	}
+	
+	/* header for "Machine Learning Playground" */
+	header {
+		background-color: #666;
+		padding: 1px;
+		text-align: center;
+		color: white;
+	}
+
+	/* Partition for graph-article section */
+	article {
+	  position: relative;
+	  float: left;
+	  padding: 20px;
+	  width: 63%;
+	  background-color: #f1f1f1; /* off-white */
+	  /*height: 300px; /* only for demonstration, should be removed */
+	}
+
+	/* Style the list inside the menu */
+	article ul {
+	  list-style-type: none;
+	  padding: 0;
+	}
+	
+	/* Partition for button navigation section */
+	nav {
+	  position: relative;
+	  float: right;
+	  width: 37%;
+	  /*height: 300px; /* only for demonstration, should be removed */
+	  background: #ccc; /* grey */
+	  padding: 20px;
+	}
+	
+	/* Clear floats after the columns */
+	section:after {
+	  content: "";
+	  display: table;
+	  clear: both;
+	}
+
+	/* Footer for about, etc... */
+	footer {
+	  background-color: #777;
+	  padding: 10px;
+	  text-align: center;
+	  color: white;
+	}
+
+	/* Responsive layout - makes the two columns/boxes stack on top of each other instead of next to each other, on small screens */
+	@media (max-width: 600px) {
+	  article, nav {
+	    width: 100%;
+	    height: auto;
+	  }
+	}
+	
+
+/* Interactive graph */
+canvas {
+	cursor: crosshair;
+	background: #E6EBF0;
+	/* background: url('http://www.mundoanimalia.com/images/articles/66/58/06/7f6ffaa6bb0b408017b62254211691b5/gallina.jpg'); */
+}
+
+/* Buttons */
+.button {
+  position: relative;
+  display: inline-block;
+  border-radius: 5px;
+  background-color: #02B1E1; /* #45D1E1 original blue */  /* #f4511e orange */ /* #4CAF50 green */
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 13px;
+  padding: 9px;
+  width: 190px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.button span {
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.5s;
+}
+
+.button span:after {
+  content: '\00bb';
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.button:hover span {
+  padding-right: 25px;
+}
+
+.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
+/* Pop-up */
+.popup {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.popup .popuptext {
+  visibility: hidden;
+  width: 166px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: -1050%;
+  left: 50%;
+  margin-left: -126px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  position: absolute;
+  top: -5%;
+  left: 50%;
+  margin-left: 22px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;} 
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+</style>
+</head>
+
+<body>
+	<title>Machine Learning Playground</title>
+	<header><p class="sansserif"><font size=20> Machine Learning Playground &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp </font><span class="popup" onclick="myFunction()">About
+	  <span class="popuptext" id="myPopup">This fun little interactive project is intended to teach those who are interested in machine learning about various popular methods.<br>More to come soon!<br> - Rebecca</span>
+	</span></p></header>
+	<section>
+		
+		<article>
+			<ul>
+				<p class="sansserif"><font size=5>Create a dataset below (<font size=4><i>in <font color="#0ECB48">green</font> by default, or shift-click to <font color="#ff2626">red</font> for binary input</i><font size=5>):</font></p>
+				<!--<link rel="stylesheet" href="styles.css">-->
+				<button onclick = "resetBtn()" class = "button" style = "vertical-align: middle; background-color: #0aA1c1; width: 140px;"><span>Reset</span></button>
+				<canvas id = "canvas" width = "760" height = "400"></canvas> <!-- width="690" height="651" -->
+				
+				<!-- Result of clicking a button displayed below -->
+				<p id="result">
+					<pre id="console"></pre> <!-- Display result to screen -->
+				</p>
+				<br><br>
+			</ul>
+		</article>
+		
+		<nav>
+			<p class="sansserif"> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp<i><font face="Albertina" size="5" color="black">. . . then see how various machine <br>&nbsp &nbsp &nbsp learning methods fit your data!</font></i></p>
+			
+			<!-- Regression -->
+			<br>&nbsp &nbsp <i><b><font face="Albertina" size="3" color="black">Regression:</font></i></b><br><button onclick = "linearRegression()" class="button" style="vertical-align: middle; background-color: #77A037;"><span>Linear Regression</span></button><button onclick="kernelRegression()" class="button" style="vertical-align: middle; background-color: #77a037;"><span>Kernel Regression</span></button>
+			
+			<!-- where dropdown menu could go -->
+		<!--	<select>
+			  <option value="1">1</option>
+			  <option value="2">2</option>
+			  <option value="3">3</option>
+			  <option value="4">4</option>
+			</select>
+		 -->
+			
+			<!-- Discriminative classification -->
+			<br><br>&nbsp &nbsp <i><b><font face="Albertina" size="3" color="gray">Discriminative classification:</font></i></b><br><button onclick="kNearest()" class="button" style="vertical-align: middle; background-color: #243F55;"><span><font color="gray">K-Nearest Neighbors</font></span></button><button onclick="kMeans()" class="button" style="vertical-align: middle; background-color: #243f55;"><span><font color="gray">K-means Clustering</font></span></button>
+
+			<button onclick="decisionTrees()" class="button" style="vertical-align: middle; background-color: #065f7c;"><span><font color="gray">Decision Trees</font></span></button><button onclick="randomForest()" class="button" style="vertical-align: middle; background-color: #065f7c;"><span><font color="gray">Random Forest</font></span></button>
+
+			<button onclick="standardSVM()" class="button" style="vertical-align: middle; background-color: #0f7787;"><span><font color="gray">Standard Support Vector Machines</font></span></button><button onclick="multiSVM()" class="button" style="vertical-align: middle; background-color: #0f7787;"><span><font color="gray">Multi-Class Support Vector Machines</font></span></button>
+
+			<button onclick="neuralNetwork()" class="button" style="vertical-align: middle; background-color: #0aA1c1;"><span><font color="gray">Neural Network</font></span></button><button onclick="logisticRegression()" class="button" style="vertical-align: middle; background-color: #0aA1c1;"><span><font color="gray">Logistic Regression</font></span></button>
+
+			<!-- Generative classification -->
+			<br><br><i><b>&nbsp &nbsp <font face="Albertina" size="3" color="gray">Generative classification:</font></i></b><br><button onclick="naiveBayes()" class="button" style="vertical-align: middle; background-color: #76496a;"><span><font color="gray">Naive Bayes</font></span></button><button onclick="gaussianMixtureModel()" class="button" style="vertical-align: middle; background-color: #76496a;"><span><font color="gray">Gaussian Mixture Model</font></span></button>
+			
+		</nav>
+	</section>
+	<footer>
+		
+	</footer>
+</body>
+
+</html>
