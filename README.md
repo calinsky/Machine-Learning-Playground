@@ -24,6 +24,8 @@ The user plots data points on the screen and then sees how various machine learn
 	Gaussian Mixture Models
 
 	CODE:
-	machine_learning_website.html     - Main website
-	matrix.js                         - Matrix class
+	main_machine_learning_website.html     - Main website
+	matrix.js                              - Matrix class
+	graph.js			       - Interactive graph
+	machine_learning.js		       - ML functions
 	
